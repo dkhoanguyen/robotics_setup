@@ -48,5 +48,7 @@ RUN bin/bash -c "source /opt/ros/noetic/setup.bash && \
 
 COPY scripts/ros_entrypoint.sh /ros_entrypoint.sh
 
+RUN mkdir calibration_file
+
 FROM scratch
 COPY --from=configure_stage / /
