@@ -19,6 +19,15 @@ else
              robot_ip:=150.22.0.41 target_filename:='/calibration_file/ur3e_calibration.yaml'"
 fi
 
+# Rosbridge server
+docker run -d --name "rosbridge" \
+    --privileged \
+    --restart "always" \
+    --network "host" \
+    robotic_base:latest \
+    bash -c "source /opt/ros/noetic/setup.bash && source /ur_ws/devel/setup.bash && \
+             roslaunch rosbridge_server rosbridge_websocket.launch"
+
 # Load calibration file and start the robot
 docker run -d --name "ur3e_controller" \
     --privileged \
@@ -30,4 +39,8 @@ docker run -d --name "ur3e_controller" \
              roslaunch ur_robot_driver ur3e_bringup.launch robot_ip:=150.22.0.41 \
              kinematics_config:='/calibration_file/ur3e_calibration.yaml'"
 
-
+# Start bridge server
+# TODO: should be separate container
+docker exec -d ur3e_controller 
+    bash -c "source /opt/ros/noetic/setup.bash && source /ur_ws/devel/setup.bash && \
+             roslaunch rosbridge_server rosbridge_websocket.launch"
