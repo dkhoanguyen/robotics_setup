@@ -27,8 +27,29 @@ while [[ $# -gt 0 ]]; do
 done
 
 set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
-
 echo "Robot IP = ${ROBOT_IP}"
+
+# Grab RPI serial number
+SERIAL=$(cat /sys/firmware/devicetree/base/serial-number)
+SSID="rpi_${SERIAL: -8}"
+
+# WIFI access point
+docker run -d --name "rpi3-wifiap" \
+    -e SSID="${SSID}" \
+    -e PASSWORD="robotic" \
+    --restart "always" \
+    --privileged \
+    --pid=host \
+    --net=host jasonhillier/rpi3-wifiap
+
+# Rosbridge server
+docker run -d --name "rosbridge" \
+    --privileged \
+    --restart "always" \
+    --network "host" \
+    robotic_base:latest \
+    bash -c "source /opt/ros/noetic/setup.bash && source /ur_ws/devel/setup.bash && \
+             roslaunch rosbridge_server rosbridge_websocket.launch"
 
 
 file_path="calibration_file/ur3e_calibration.yaml"
@@ -49,15 +70,6 @@ else
              timeout 20 roslaunch ur_calibration calibration_correction.launch \
              robot_ip:=${ROBOT_IP} target_filename:='/calibration_file/ur3e_calibration.yaml'"
 fi
-
-# Rosbridge server
-docker run -d --name "rosbridge" \
-    --privileged \
-    --restart "always" \
-    --network "host" \
-    robotic_base:latest \
-    bash -c "source /opt/ros/noetic/setup.bash && source /ur_ws/devel/setup.bash && \
-             roslaunch rosbridge_server rosbridge_websocket.launch"
 
 # Load calibration file and start the robot
 docker run -d --name "ur3e_controller" \

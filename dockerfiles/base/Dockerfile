@@ -5,12 +5,11 @@ RUN apt update && apt install -y \
     git \
     gcc \
     curl \
-    wget
-
-RUN apt install -y \
+    wget \
     ros-noetic-tf \
     ros-noetic-tf2-tools \
-    python3-catkin-tools
+    python3-catkin-tools \
+    python3-pip
 
 # Install ROS bridge
 RUN apt update && apt install -y ros-noetic-rosbridge-suite
@@ -34,6 +33,7 @@ RUN cd ur_ws && \
     rosdep install --from-paths src --ignore-src -y
 
 # onrobot gripper
+RUN pip3 install pymodbus==2.5.3
 RUN cd ur_ws/src && \
     git clone https://github.com/takuya-ki/onrobot.git --depth 1 && \
     git clone https://github.com/roboticsgroup/roboticsgroup_upatras_gazebo_plugins.git --depth 1 && \
