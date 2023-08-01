@@ -1,16 +1,35 @@
 #!/bin/bash
 
-# Check if two arguments are provided
-if [ "$#" -ne 2 ]; then
-  echo "Usage: $0 <name> <age>"
+if [ "$#" -lt 2 ]; then
+  echo "Usage: $0 <arg1> <arg2> [arg3 ...]"
   exit 1
 fi
 
-config="$1"
-value="$2"
 
-echo $config
-echo $value
+POSITIONAL_ARGS=()
+
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -r|--robot_ip)
+      ROBOT_IP="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -*|--*)
+      echo "Unknown option $1"
+      exit 1
+      ;;
+    *)
+      POSITIONAL_ARGS+=("$1") # save positional arg
+      shift # past argument
+      ;;
+  esac
+done
+
+set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
+
+echo "Robot IP = ${ROBOT_IP}"
+
 
 file_path="calibration_file/ur3e_calibration.yaml"
 # TODO: check whether this folder exists
@@ -28,7 +47,7 @@ else
     robotic_base:latest \
     bash -c "source /opt/ros/noetic/setup.bash && source /ur_ws/devel/setup.bash && \
              timeout 20 roslaunch ur_calibration calibration_correction.launch \
-             robot_ip:=150.22.0.41 target_filename:='/calibration_file/ur3e_calibration.yaml'"
+             robot_ip:=${ROBOT_IP} target_filename:='/calibration_file/ur3e_calibration.yaml'"
 fi
 
 # Rosbridge server
@@ -48,5 +67,5 @@ docker run -d --name "ur3e_controller" \
     --mount type=bind,source="$(pwd)"/calibration_file,target=/calibration_file \
     robotic_base:latest \
     bash -c "source /opt/ros/noetic/setup.bash && source /ur_ws/devel/setup.bash && \
-             roslaunch ur_robot_driver ur3e_bringup.launch robot_ip:='$value' \
+             roslaunch ur_robot_driver ur3e_bringup.launch robot_ip:=${ROBOT_IP} \
              kinematics_config:='/calibration_file/ur3e_calibration.yaml'"
