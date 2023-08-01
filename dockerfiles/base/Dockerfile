@@ -46,6 +46,47 @@ RUN bin/bash -c "source /opt/ros/noetic/setup.bash && \
                  cd ur_ws && \
                  catkin build"
 
+# Configure Dobot ws
+RUN mkdir -p db_ws/src && \
+    cd db_ws && \
+    catkin init && \
+    echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
+
+# dobot_magician_driver
+RUN apt install -y g++ git autogen autoconf build-essential cmake graphviz \
+                 libboost-dev libboost-test-dev libgtest-dev libtool \
+                 python3-sip-dev doxygen python3-sphinx pkg-config \
+                 python3-sphinx-rtd-theme
+
+RUN git clone https://github.com/crayzeewulf/libserial && \
+    cd libserial && \
+    ./compile.sh && \
+    cd build && \
+    make install && \
+    apt install -y libserialport0 libusb-1.0-0-dev
+
+RUN cd db_ws/src && \
+    git clone https://github.com/gapaul/dobot_magician_driver.git
+
+# Build db_ws
+RUN bin/bash -c "source /opt/ros/noetic/setup.bash && \
+                 cd db_ws && \
+                 catkin build"
+
+# Configure Dobot ws
+RUN mkdir -p hans_ws/src && \
+    cd hans_ws && \
+    catkin init && \
+    echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc && \
+    cd src && \ 
+    git clone https://github.com/dkhoanguyen/hans-cute-driver
+
+# Has to catkin_make here instead of build due to serial_port not being a catkin package
+RUN bin/bash -c "source /opt/ros/noetic/setup.bash && \
+                 cd hans_ws && \
+                 catkin_make"
+
+
 COPY scripts/ros_entrypoint.sh /ros_entrypoint.sh
 
 RUN mkdir calibration_file

@@ -1,5 +1,17 @@
 #!/bin/bash
 
+# Check if two arguments are provided
+if [ "$#" -ne 2 ]; then
+  echo "Usage: $0 <name> <age>"
+  exit 1
+fi
+
+config="$1"
+value="$2"
+
+echo $config
+echo $value
+
 file_path="calibration_file/ur3e_calibration.yaml"
 # TODO: check whether this folder exists
 if [ -e "$file_path" ]; then
@@ -36,5 +48,5 @@ docker run -d --name "ur3e_controller" \
     --mount type=bind,source="$(pwd)"/calibration_file,target=/calibration_file \
     robotic_base:latest \
     bash -c "source /opt/ros/noetic/setup.bash && source /ur_ws/devel/setup.bash && \
-             roslaunch ur_robot_driver ur3e_bringup.launch robot_ip:=150.22.0.41 \
+             roslaunch ur_robot_driver ur3e_bringup.launch robot_ip:='$value' \
              kinematics_config:='/calibration_file/ur3e_calibration.yaml'"
