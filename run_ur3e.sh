@@ -41,7 +41,7 @@ SSID="rpi_${SERIAL: -8}"
 
 # WIFI access point
 docker run -d --name "rpi3-wifiap" \
-    -e SSID="${SSID}" \
+    -e SSID="rpi3_default" \
     -e PASSWORD="robotic" \
     --restart "always" \
     --privileged \
