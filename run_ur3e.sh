@@ -95,6 +95,7 @@ docker run -d --name "gripper_hw_interface" \
     --network "host" \
     robotic_base:latest \
     bash -c "source /opt/ros/noetic/setup.bash && source /ur_ws/devel/setup.bash && \
+             sleep 30 && \
              roslaunch onrobot_rg_control bringup.launch gripper:=rg2 ip:=${GRIPPER_IP}"
 
 docker run -d --name "gripper_controller" \
@@ -103,5 +104,6 @@ docker run -d --name "gripper_controller" \
     --network "host" \
     robotic_base:latest \
     bash -c "source /opt/ros/noetic/setup.bash && source /ur_ws/devel/setup.bash && \
+             sleep 45 && \
              rosrun onrobot_rg_control OnRobotRGSimpleControllerServer.py"
 
