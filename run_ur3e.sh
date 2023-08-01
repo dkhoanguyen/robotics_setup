@@ -35,10 +35,6 @@ set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 echo "Robot IP = ${ROBOT_IP}"
 echo "Gripper IP = ${GRIPPER_IP}"
 
-# Grab RPI serial number
-SERIAL=$(cat /sys/firmware/devicetree/base/serial-number)
-SSID="rpi_${SERIAL: -8}"
-
 # WIFI access point
 docker run -d --name "rpi3-wifiap" \
     -e SSID="rpi3_default" \
@@ -85,6 +81,7 @@ docker run -d --name "ur3e_controller" \
     --mount type=bind,source="$(pwd)"/calibration_file,target=/calibration_file \
     robotic_base:latest \
     bash -c "source /opt/ros/noetic/setup.bash && source /ur_ws/devel/setup.bash && \
+             sleep 15 && \
              roslaunch ur_robot_driver ur3e_bringup.launch robot_ip:=${ROBOT_IP} \
              kinematics_config:='/calibration_file/ur3e_calibration.yaml'"
 
