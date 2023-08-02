@@ -5,7 +5,7 @@ docker run -d --name "rpi3-wifiap" \
     --restart "always" \
     --privileged \
     --net host \
-    -v $(pwd)/config/wifi/wificfg.json:/cfg/wificfg.json \
+    -v $(pwd)/config/rpi_wifi/wificfg.json:/cfg/wificfg.json \
     cjimti/iotwifi
 
 # Rosbridge server
@@ -18,11 +18,12 @@ docker run -d --name "rosbridge" \
              roslaunch rosbridge_server rosbridge_websocket.launch"
 
 # Start the robot
-docker run -d --name "hans_controller" \
+docker run -d --name "dobot_controller" \
     --privileged \
     --restart "always" \
     --network "host" \
     --mount type=bind,source=/dev/,target=/dev/ \
     robotic_base:latest \
     bash -c "source /opt/ros/noetic/setup.bash && source /db_ws/devel/setup.bash && \
+             sleep 15 && \
              roslaunch dobot_magician_driver dobot_magician.launch"
