@@ -12,6 +12,11 @@ Download the Raspberry Pi Imager and follow the instructions:
   - Username: robotic
   - Password: admin
   - Enable locale settings
+  
+Insert the SD card into the Raspberry Pi and let it boot, which usually takes around 1 to 2 minutes. After that, connect it to a router and proceed with ssh-ing into it, using the above credentials.
+It is also important to have the ip address of the ethernet port to be static. To do so, follow the instructions from this [guide](https://www.makeuseof.com/raspberry-pi-set-static-ip/).
+Finally, follow this [guide](https://www.simplilearn.com/tutorials/docker-tutorial/raspberry-pi-docker) to install and configure docker onto the Raspberry Pi. Note that it is not necessary to install docker-compose since we do not rely on it in any of the scripts.
+
 ### How to build base image
 `robotic_base` image can only be built on Ubuntu devices (currently supported on MacOS M1 only) and cannot be built on a raspberry pi due to missing dependencies. Therefore, the base image should be built on an Ubuntu device and then transfered onto the Pi for setting up containers.
 
@@ -42,12 +47,35 @@ docker load -i robotic_base
 
 Please make sure that there is sufficient space on the Pi for this operation. Once that done then the image should be available for use. You can double-check using `docker image ls -a`
 
+##### Disabling wpa_supplicant
+To facilitate the wifi access point setup, it is important to disable the **wpa_supplicant** on the Raspberry Pi by using these commands:
+```
+sudo systemctl mask wpa_supplicant.service
+sudo mv /sbin/wpa_supplicant /sbin/no_wpa_supplicant
+sudo pkill wpa_supplicant
+```
+
 ### Run containers
-Simply execute
+We currently support the following robots:
+- UR3 (CB and E series) with the onrobot grippers (RG2 only)
+- Hans Cute
+- Dobot Magician
+
+#### UR3 series
+Please double check your setup before proceeding:
+- The following components should be present:
+  - UR3 robot
+  - Router
+  - Raspberry Pi
+- They must all be connected to the same network. The UR3 has to be configured with the **External Control URCap** to communicate with ROS. Please follow the instructions [here](https://github.com/UniversalRobots/Universal_Robots_ROS_Driver/blob/master/ur_robot_driver/doc/install_urcap_cb3.md) to setup a CB series robot and [here](https://github.com/UniversalRobots/Universal_Robots_ROS_Driver/blob/master/ur_robot_driver/doc/install_urcap_e_series.md) to setup an E series robot.
+
+Once that is done, ssh into the Raspberry Pi and run:
+E series:
 ```
-./run.sh
+./run_ur3e.sh
 ```
-This script should execute the following operations:
-- Create a `calibration_file` folder for storing the calibration result of a specific UR robot
-- Perform a robot calibration and store the calibration result in the `calibration_file` folder
-- Start the controller with the provided calibration result
+CB series:
+```
+./run_ur3.sh
+```
+Please allow at least one minute for all containers to properly start and kick off all of the necessary components.

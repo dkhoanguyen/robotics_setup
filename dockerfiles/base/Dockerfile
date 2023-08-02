@@ -86,6 +86,18 @@ RUN bin/bash -c "source /opt/ros/noetic/setup.bash && \
                  cd hans_ws && \
                  catkin_make"
 
+# Omron Robots
+RUN mkdir -p omron_ws/src && \
+    cd omron_ws && \
+    catkin init && \
+    echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc && \
+    cd src && \ 
+    git clone -b noetic https://github.com/TechmanRobotInc/tmr_ros1.git
+
+# Build omron_ws
+RUN bin/bash -c "source /opt/ros/noetic/setup.bash && \
+                 cd omron_ws && \
+                 catkin build"
 
 COPY scripts/ros_entrypoint.sh /ros_entrypoint.sh
 
