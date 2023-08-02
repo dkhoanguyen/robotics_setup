@@ -24,5 +24,5 @@ docker run -d --name "hans_controller" \
     --network "host" \
     --mount type=bind,source=/dev/,target=/dev/ \
     robotic_base:latest \
-    bash -c "source /opt/ros/noetic/setup.bash && source /hans_ws/devel/setup.bash && \
-             roslaunch hans_cute_bringup hans_cute_bringup.launch"
+    bash -c "source /opt/ros/noetic/setup.bash && source /db_ws/devel/setup.bash && \
+             roslaunch dobot_magician_driver dobot_magician.launch"
