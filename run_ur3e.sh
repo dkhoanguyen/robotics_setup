@@ -45,6 +45,7 @@ docker run -d --name "rpi3-wifiap" \
 
 # Rosbridge server
 docker run -d --name "rosbridge" \
+    --tty \
     --privileged \
     --restart "always" \
     --network "host" \
@@ -63,17 +64,19 @@ else
 
     # Calibrate the robot
     docker run --rm --name "ur3e_calibration" \
-    --privileged \
-    --network "host" \
-    --volume "$(pwd)"/calibration_file:/calibration_file \
-    robotic_base:latest \
-    bash -c "source /opt/ros/noetic/setup.bash && source /ur_ws/devel/setup.bash && \
-             timeout 20 roslaunch ur_calibration calibration_correction.launch \
-             robot_ip:=${ROBOT_IP} target_filename:='/calibration_file/ur3e_calibration.yaml'"
+      --tty \
+      --privileged \
+      --network "host" \
+      --volume "$(pwd)"/calibration_file:/calibration_file \
+      robotic_base:latest \
+      bash -c "source /opt/ros/noetic/setup.bash && source /ur_ws/devel/setup.bash && \
+              timeout 20 roslaunch ur_calibration calibration_correction.launch \
+              robot_ip:=${ROBOT_IP} target_filename:='/calibration_file/ur3e_calibration.yaml'"
 fi
 
 # Load calibration file and start the robot
 docker run -d --name "ur3e_controller" \
+    --tty \
     --privileged \
     --restart "always" \
     --network "host" \
@@ -86,6 +89,7 @@ docker run -d --name "ur3e_controller" \
 
 # Start gripper
 docker run -d --name "gripper_hw_interface" \
+    --tty \
     --privileged \
     --restart "always" \
     --network "host" \
@@ -95,6 +99,7 @@ docker run -d --name "gripper_hw_interface" \
              roslaunch onrobot_rg_control bringup.launch gripper:=rg2 ip:=${GRIPPER_IP}"
 
 docker run -d --name "gripper_controller" \
+    --tty \
     --privileged \
     --restart "always" \
     --network "host" \

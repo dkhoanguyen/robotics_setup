@@ -10,6 +10,7 @@ docker run -d --name "rpi3-wifiap" \
 
 # Rosbridge server
 docker run -d --name "rosbridge" \
+    --tty \ 
     --privileged \
     --restart "always" \
     --network "host" \

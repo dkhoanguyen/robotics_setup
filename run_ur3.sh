@@ -45,6 +45,7 @@ docker run -d --name "rpi3-wifiap" \
 
 # Rosbridge server
 docker run -d --name "rosbridge" \
+    --tty \
     --privileged \
     --restart "always" \
     --network "host" \
@@ -63,6 +64,7 @@ else
 
     # Calibrate the robot
     docker run --rm --name "ur3_calibration" \
+    --tty \
     --privileged \
     --network "host" \
     --volume "$(pwd)"/calibration_file:/calibration_file \
@@ -74,6 +76,7 @@ fi
 
 # Load calibration file and start the robot
 docker run -d --name "ur3_controller" \
+    --tty \
     --privileged \
     --restart "always" \
     --network "host" \
@@ -86,6 +89,7 @@ docker run -d --name "ur3_controller" \
 
 # Start gripper
 docker run -d --name "gripper_hw_interface" \
+    --tty \
     --privileged \
     --restart "always" \
     --network "host" \
@@ -95,6 +99,7 @@ docker run -d --name "gripper_hw_interface" \
              roslaunch onrobot_rg_control bringup.launch gripper:=rg2 ip:=${GRIPPER_IP}"
 
 docker run -d --name "gripper_controller" \
+    --tty \
     --privileged \
     --restart "always" \
     --network "host" \
