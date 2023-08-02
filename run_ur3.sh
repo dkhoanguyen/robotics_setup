@@ -37,12 +37,11 @@ echo "Gripper IP = ${GRIPPER_IP}"
 
 # WIFI access point
 docker run -d --name "rpi3-wifiap" \
-    -e SSID="rpi3_default" \
-    -e PASSWORD="robotic" \
     --restart "always" \
     --privileged \
-    --pid=host \
-    --net=host jasonhillier/rpi3-wifiap
+    --net host \
+    -v $(pwd)/config/wifi/wificfg.json:/cfg/wificfg.json \
+    cjimti/iotwifi
 
 # Rosbridge server
 docker run -d --name "rosbridge" \
