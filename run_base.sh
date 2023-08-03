@@ -5,7 +5,7 @@ docker run -d --name "rpi3-wifiap" \
     --restart "always" \
     --privileged \
     --net host \
-    -v $(pwd)/config/wifi/wificfg.json:/cfg/wificfg.json \
+    -v $(pwd)/config/rpi_wifi/wificfg.json:/cfg/wificfg.json \
     cjimti/iotwifi
 
 # Rosbridge server
