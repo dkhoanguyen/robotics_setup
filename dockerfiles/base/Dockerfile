@@ -92,12 +92,20 @@ RUN mkdir -p omron_ws/src && \
     catkin init && \
     echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc && \
     cd src && \ 
-    git clone -b noetic https://github.com/TechmanRobotInc/tmr_ros1.git
+    git clone -b noetic https://github.com/TechmanRobotInc/tmr_ros1.git && \
+    cd ../ && \
+    rosdep install --from-paths ./src --ignore-packages-from-source --rosdistro noetic -y --os=ubuntu:focal -y 
 
-# Build omron_ws
-RUN bin/bash -c "source /opt/ros/noetic/setup.bash && \
-                 cd omron_ws && \
-                 catkin build"
+# # Build omron_ws
+# RUN bin/bash -c "source /opt/ros/noetic/setup.bash && \
+#                  cd omron_ws && \
+#                  catkin build"
+
+# # Add sensors support
+# RUN apt update && apt install -y \
+#     ros-noetic-realsense2-camera \
+#     ros-noetic-usb-cam
+
 
 COPY scripts/ros_entrypoint.sh /ros_entrypoint.sh
 

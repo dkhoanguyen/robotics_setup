@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Add the container names you want to keep to this array
-container_names_to_keep=("rosbridge" "rpi3-wifiap")
+container_names_to_keep=("rosbridge" "rpi3-wifiap" "dev_container")
 
 # Get all running container IDs
 all_container_ids=$(docker ps -q)
