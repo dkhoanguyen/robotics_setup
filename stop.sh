@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Add the container names you want to keep to this array
-container_names_to_keep=("container_name1" "container_name2" "container_name3")
+container_names_to_keep=("rosbridge" "rpi3-wifiap")
 
 # Get all running container IDs
 all_container_ids=$(docker ps -q)
@@ -18,6 +18,7 @@ done
 # Stop the containers (if any)
 if [[ ${#container_ids_to_stop[@]} -gt 0 ]]; then
     docker stop "${container_ids_to_stop[@]}"
+    docker rm "${container_ids_to_stop[@]}"
     echo "Stopped all containers except: ${container_names_to_keep[*]}."
 else
     echo "No containers to stop except: ${container_names_to_keep[*]}."
