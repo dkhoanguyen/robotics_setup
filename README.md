@@ -3,7 +3,7 @@
 ## Overview
 
 ## For developers, tutors or individuals who are keen
-### Setting up the Raspberry Pi
+### Setting up the Raspberry Pi (from scratch)
 Download the Raspberry Pi Imager and follow the instructions:
 - Flash Raspian Lite OS 64bit. Make sure that SD card is at least 16GB
 - Before flashing the OS to the SD, ensure the following configurations are met:
@@ -15,12 +15,13 @@ Download the Raspberry Pi Imager and follow the instructions:
   
 Insert the SD card into the Raspberry Pi and let it boot, which usually takes around 1 to 2 minutes. After that, connect it to a router and proceed with ssh-ing into it, using the above credentials.
 It is also important to have the ip address of the ethernet port to be static. To do so, follow the instructions from this [guide](https://www.makeuseof.com/raspberry-pi-set-static-ip/).
-Finally, follow this [guide](https://www.simplilearn.com/tutorials/docker-tutorial/raspberry-pi-docker) to install and configure docker onto the Raspberry Pi. Note that it is not necessary to install docker-compose since we do not rely on it in any of the scripts.
+Follow this [guide](https://www.simplilearn.com/tutorials/docker-tutorial/raspberry-pi-docker) to install and configure docker onto the Raspberry Pi. Note that it is not necessary to install docker-compose since we do not rely on it in any of the scripts.
+Finally, clone this package to the Pi and put it somewhere convienient for youself.
 
 ### How to build base image
 `robotic_base` image can only be built on Ubuntu devices (currently supported on MacOS M1 only) and cannot be built on a raspberry pi due to missing dependencies. Therefore, the base image should be built on an Ubuntu device and then transfered onto the Pi for setting up containers.
 
-You can also ask the maintainer (Khoa - khoanguyendacdang2198@gmail.com) of this repository for a copy of the base image.
+You can also email the maintainer (Khoa - khoanguyendacdang2198@gmail.com) of this repository for a copy of the base image.
 To build the base image, follow the instructions:
 
 ##### On the Ubuntu device:
@@ -54,6 +55,46 @@ sudo systemctl mask wpa_supplicant.service
 sudo mv /sbin/wpa_supplicant /sbin/no_wpa_supplicant
 sudo pkill wpa_supplicant
 ```
+### Configuring Wifi Access Point
+It is important to configure the Wifi Access Point before proceeding forward, as it creates a safe point for us to ssh in and debug the unit. It also provides a mean for non - ROS devices to communicate with the ROS network inside the Pi via websocket.
+To get started, we need to make the Wifi of each Pi to contain the uuid serial number. Obtain the serial number by running the following command:
+```
+cat /sys/firmware/devicetree/base/serial-number
+```
+The output should look something like this:
+```
+1000000aabbccdd
+```
+Copy the **last 8 digits of the uuid** and save it somewhere.
+After that, navigate to the `config/rpi_wifi` folder and open the file `wificfg.json`. It should look something like this:
+```
+{
+    "dnsmasq_cfg": {
+        "address": "/#/192.168.27.1",
+        "dhcp_range": "192.168.27.100,192.168.27.150,1h",
+        "vendor_class": "set:device,IoT"
+    },
+    "host_apd_cfg": {
+        "ip": "192.168.27.1",
+        "ssid": "rpi3_default",
+        "wpa_passphrase": "robotics",
+        "channel": "6"
+    },
+    "wpa_supplicant_cfg": {
+        "cfg_file": "/etc/wpa_supplicant/wpa_supplicant.conf"
+    }
+}
+```
+Replace the `rpi3_default` in the `ssid` field by a combination of the word `robotics_` and the 8 uuid characters that you've obtained from the previous step. The field should look like this:
+```
+"ssid": "robotics_aabbccdd",
+```
+Also change the passphrase to `robotics` if necessary.
+Save the file and navigate back to the root folder of the repo then run
+```
+./run_base.sh
+```
+Double check on your laptop or phone to see if the Wifi is available.
 
 ### Run containers
 We currently support the following robots:

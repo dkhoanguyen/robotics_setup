@@ -7,7 +7,7 @@
     "host_apd_cfg": {
         "ip": "192.168.27.1",
         "ssid": "rpi3_default",
-        "wpa_passphrase": "raspberry",
+        "wpa_passphrase": "robotics",
         "channel": "6"
     },
     "wpa_supplicant_cfg": {

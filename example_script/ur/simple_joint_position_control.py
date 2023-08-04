@@ -2,7 +2,7 @@ import time
 import roslibpy
 
 def move_ur_joint_positions(joint_positions):
-    client = roslibpy.Ros(host='150.22.0.40', port=9090)  # Replace with your ROS master IP
+    client = roslibpy.Ros(host='150.22.0.100', port=9090)  # Replace with your ROS master IP
 
     try:
         client.run()
