@@ -2,7 +2,7 @@ import time
 import roslibpy
 
 def move_ur_joint_positions(joint_positions):
-    client = roslibpy.Ros(host='150.22.0.100', port=9090)  # Replace with your ROS master IP
+    client = roslibpy.Ros(host='192.168.27.1', port=9090)  # Replace with your ROS master IP
 
     try:
         client.run()
@@ -33,7 +33,7 @@ def move_ur_joint_positions(joint_positions):
 if __name__ == '__main__':
     try:
         # Example joint positions to move the robot
-        target_joint_positions = [1.57, -1.57, 0.0, -1.57, 0.0, 0.0]  # You can modify these values
+        target_joint_positions = [0.0, -1.57, 0.0, -1.57, 0.0, 0.0]  # You can modify these values
 
         move_ur_joint_positions(target_joint_positions)
     except KeyboardInterrupt:
