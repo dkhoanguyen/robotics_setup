@@ -7,6 +7,8 @@ docker run -d --name "hans_controller" \
     --restart "always" \
     --network "host" \
     --mount type=bind,source=/dev/,target=/dev/ \
+    -e ROS_MASTER_URI="http://localhost:11311" \
+    -e ROS_IP="192.168.27.1" \
     robotic_base:latest \
     bash -c "source /opt/ros/noetic/setup.bash && source /hans_ws/devel/setup.bash && \
              sleep 15 && \
