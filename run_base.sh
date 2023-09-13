@@ -1,12 +1,20 @@
 #!/bin/bash
 
-# WIFI access point
+# Configure RPI Wifi access point
+# Prerequisites
+echo 'denyinterfaces wlan0' >> /etc/dhcpcd.conf
+cd rpi_wifi_ap/
+
+# Build docker image
+docker build . --tag rpi_wifi_ap
+
+# Start the access point
 docker run -d --name "rpi3-wifiap" \
     --restart "always" \
+    --tty \
     --privileged \
-    --net host \
-    -v $(pwd)/config/rpi_wifi/wificfg.json:/cfg/wificfg.json \
-    cjimti/iotwifi
+    --cap-add=NET_ADMIN \
+    --network=host  rpi3-wifiap
 
 # Rosbridge server
 docker run -d --name "rosbridge" \

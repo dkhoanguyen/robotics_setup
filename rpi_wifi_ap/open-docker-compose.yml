@@ -1,0 +1,12 @@
+version: '3.7'
+services: 
+  autowlan:
+    container_name: autowlan_open
+    build: .
+    image: autowlan
+    cap_add: 
+      - NET_ADMIN
+    stop_grace_period: 2m
+    network_mode: "host"
+    volumes: 
+      - ./confs/hostapd_confs/open.conf:/etc/hostapd/hostapd.conf

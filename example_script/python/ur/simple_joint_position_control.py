@@ -10,28 +10,28 @@ def move_ur_joint_positions(joint_positions):
         listener = roslibpy.Topic(client, '/joint_states', 'sensor_msgs/JointState')
         listener.subscribe(lambda message: print(message))
 
-        # # Create a JointTrajectory message
-        # joint_trajectory_msg = {
-        #     'joint_names': ['shoulder_pan_joint', 'shoulder_lift_joint', 'elbow_joint',
-        #                     'wrist_1_joint', 'wrist_2_joint', 'wrist_3_joint'],
-        #     'points': [{
-        #         'positions': joint_positions,
-        #         'time_from_start': {'secs': 5, 'nsecs': 0}  # Time for reaching the desired position
-        #     }]
-        # }
+        # Create a JointTrajectory message
+        joint_trajectory_msg = {
+            'joint_names': ['shoulder_pan_joint', 'shoulder_lift_joint', 'elbow_joint',
+                            'wrist_1_joint', 'wrist_2_joint', 'wrist_3_joint'],
+            'points': [{
+                'positions': joint_positions,
+                'time_from_start': {'secs': 5, 'nsecs': 0}  # Time for reaching the desired position
+            }]
+        }
 
-        # # Publish the trajectory to the '/arm_controller/command' topic
-        # topic = roslibpy.Topic(client, '/scaled_pos_joint_traj_controller/command', 'trajectory_msgs/JointTrajectory')
-        # topic.advertise()
-        # topic.publish(roslibpy.Message(joint_trajectory_msg))
+        # Publish the trajectory to the '/arm_controller/command' topic
+        topic = roslibpy.Topic(client, '/scaled_pos_joint_traj_controller/command', 'trajectory_msgs/JointTrajectory')
+        topic.advertise()
+        topic.publish(roslibpy.Message(joint_trajectory_msg))
 
-        # # Wait for the robot to reach the desired position
-        # time.sleep(6)
+        # Wait for the robot to reach the desired position
+        time.sleep(6)
 
-        # topic.unadvertise()
+        topic.unadvertise()
         
         while True:
-                pass
+            pass
 
     finally:
         client.terminate()
