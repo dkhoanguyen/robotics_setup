@@ -6,7 +6,7 @@ echo 'denyinterfaces wlan0' >> /etc/dhcpcd.conf
 cd rpi_wifi_ap/
 
 # Build docker image
-docker build . --tag rpi_wifi_ap
+docker build . --tag rpi3-wifiap
 
 # Start the access point
 docker run -d --name "rpi3-wifiap" \
