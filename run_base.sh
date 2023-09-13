@@ -15,7 +15,7 @@ docker run -d --name "rpi3-wifiap" \
     --privileged \
     --cap-add=NET_ADMIN \
     --network=host  \
-    --volume "$(pwd)"/rpi_wifi_ap/confs/hostapd_confs/robotics.conf:/etc/hostapd/hostapd.conf \
+    --volume "$(pwd)"/confs/hostapd_confs/robotics.conf:/etc/hostapd/hostapd.conf \
     rpi3-wifiap
 
 # Rosbridge server
