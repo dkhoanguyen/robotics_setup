@@ -3,7 +3,7 @@ import psutil
 import platform
 from flask import Flask, jsonify
 
-from hardware_monitor import HardwareMonitor
+from server.hardware_monitor import HardwareMonitor
 
 # Create a Flask web server
 app = Flask(__name__)
@@ -29,7 +29,3 @@ def get_battery_status():
 def get_ip_address():
     addess = HardwareMonitor.get_all_ip_addresses()
     return jsonify(addess)
-
-# Run the server
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080, debug=False)

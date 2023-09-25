@@ -1,5 +1,0 @@
-psutil
-flask
-docker
-netifaces
-socket
