@@ -14,8 +14,10 @@ app = Flask(__name__)
 def request_shutdown():
     try:
         subprocess.run(['echo 1 > /proc/sys/kernel/sysrq && \
+                        echo e > /proc/sys/kernel/sysrq && \
+                        echo i > /proc/sys/kernel/sysrq && \
                         echo s > /proc/sysrq-trigger && \
-                        echo o > /proc/sysrq-trigger'], check=True)
+                        echo b > /proc/sysrq-trigger'], check=True)
         return jsonify({"message": "Computer is shutting down..."}), 200
     except subprocess.CalledProcessError:
         return jsonify({"error": "Failed to initiate shutdown."}), 500
