@@ -1,3 +1,5 @@
 built_images/*
 calibration_file/*
 __pycache__
+build/
+.vscode

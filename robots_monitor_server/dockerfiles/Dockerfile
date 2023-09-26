@@ -14,8 +14,8 @@ RUN apt update && \
     rm -rf /var/lib/apt/lists/* && \
     pip install --upgrade pip
 
-COPY app/requirements.txt /usr/src/app/requirements.txt
+COPY robots_monitor_server/requirements.txt /usr/src/app/requirements.txt
 RUN pip install -r requirements.txt
 
 # copy project
-COPY app/ /usr/src/app/
+COPY robots_monitor_server/ /usr/src/app/

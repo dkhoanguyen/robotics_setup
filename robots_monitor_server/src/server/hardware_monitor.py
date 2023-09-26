@@ -92,6 +92,9 @@ class HardwareMonitor(object):
             # Check if it's an IPv4 address
             if '.' in ip_address:
                 output.append(ip_address)
+
+        # Remove all duplicates
+        output = list(set(output))
         return {
             "ip_addresses": output
         }

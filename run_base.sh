@@ -18,12 +18,6 @@ docker run -d --name "rpi3-wifiap" \
     --volume "$(pwd)"/confs/hostapd_confs/robotics.conf:/etc/hostapd/hostapd.conf \
     rpi3-wifiap
 
-# Configure monitor server
-# Build the docker image
-docker build --tag monitor_server app/monitor_server/Dockerfile
-
-# Run the server
-
 # Rosbridge server
 docker run -d --name "rosbridge" \
     --tty \
