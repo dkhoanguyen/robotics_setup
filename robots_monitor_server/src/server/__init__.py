@@ -1,5 +1,5 @@
 import os
-import subprocess
+import dbus
 from flask import Flask, jsonify, request
 
 from server.container_monitor import ContainerMonitor
@@ -12,26 +12,27 @@ app = Flask(__name__)
 
 @app.route('/shutdown', methods=['POST'])
 def request_shutdown():
-    try:
-        subprocess.run(['echo 1 > /proc/sys/kernel/sysrq && \
-                        echo e > /proc/sys/kernel/sysrq && \
-                        echo i > /proc/sys/kernel/sysrq && \
-                        echo s > /proc/sysrq-trigger && \
-                        echo b > /proc/sysrq-trigger'], check=True)
-        return jsonify({"message": "Computer is shutting down..."}), 200
-    except subprocess.CalledProcessError:
-        return jsonify({"error": "Failed to initiate shutdown."}), 500
+    bus = dbus.SystemBus()
+    systemd1 = bus.get_object('org.freedesktop.systemd1', '/org/freedesktop/systemd1')
+    # Get the Manager interface
+    manager = dbus.Interface(systemd1, 'org.freedesktop.systemd1.Manager')
+    # Trigger a system reboot
+    manager.PowerOff()
+    return jsonify({"message": "Computer is shutting down..."}), 200
+
 
 
 @app.route('/restart', methods=['POST'])
 def request_restart():
-    try:
-        subprocess.run(['echo 1 > /proc/sys/kernel/sysrq && \
-                        echo s > /proc/sysrq-trigger && \
-                        echo b > /proc/sysrq-trigger'], check=True)
-        return jsonify({"message": "Computer is shutting down..."}), 200
-    except subprocess.CalledProcessError:
-        return jsonify({"error": "Failed to initiate shutdown."}), 500
+    bus = dbus.SystemBus()
+    systemd1 = bus.get_object('org.freedesktop.systemd1', '/org/freedesktop/systemd1')
+
+    # Get the Manager interface
+    manager = dbus.Interface(systemd1, 'org.freedesktop.systemd1.Manager')
+
+    # Trigger a system shutdown
+    manager.Reboot()
+    return jsonify({"message": "Computer is shutting down..."}), 200
 
 
 @app.route('/hardware-info', methods=['GET'])
