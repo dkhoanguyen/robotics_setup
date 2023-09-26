@@ -9,7 +9,7 @@ ENV PYTHONUNBUFFERED 1
 
 # Dependencies
 RUN apt update && \
-    apt install -y gcc python3-dev sysvinit&& \
+    apt install -y gcc python3-dev sysvinit-core && \
     apt clean && \
     rm -rf /var/lib/apt/lists/* && \
     pip install --upgrade pip
