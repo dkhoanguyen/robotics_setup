@@ -10,5 +10,5 @@ docker run -d --name "robot_monitor_server" \
     --volume /run/systemd:/run/systemd --pid=host \
     --mount type=bind,source="$(pwd)"/calibration_file,target=/calibration_file \
     monitor_server:latest \
-    bash -c "cd /robots_monitor_server/ && \
+    bash -c "cd /robots_monitor_server/src/ && \
              gunicorn --bind 0.0.0.0:8080 -t 60 main:app"
