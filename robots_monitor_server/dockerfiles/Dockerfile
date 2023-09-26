@@ -1,7 +1,13 @@
-FROM python:3.11-slim-buster
+FROM ubuntu:22.04
 
-# set work directory
-WORKDIR /usr/src/app
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+  && apt-get install -y python3-pip python3-dev \
+  && cd /usr/local/bin \
+  && ln -s /usr/bin/python3 python \
+  && pip3 --no-cache-dir install --upgrade pip \
+  && rm -rf /var/lib/apt/lists/*
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -14,8 +20,8 @@ RUN apt update && \
     rm -rf /var/lib/apt/lists/* && \
     pip install --upgrade pip
 
-COPY robots_monitor_server/requirements.txt /usr/src/app/requirements.txt
+COPY robots_monitor_server/requirements.txt /requirements.txt
 RUN pip install -r requirements.txt
 
 # copy project
-COPY robots_monitor_server/ /usr/src/app/
+COPY robots_monitor_server/ /robots_monitor_server/
