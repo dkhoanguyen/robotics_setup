@@ -22,3 +22,10 @@ class ContainerMonitor(object):
             if container.name not in whitelist:
                 container.stop()
                 container.remove()
+
+    def create_and_start_container(self, config):
+         # Create the Docker container
+        try:
+            self._client.containers.run(**config)
+        except docker.errors.ContainerError:
+            pass
