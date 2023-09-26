@@ -1,4 +1,5 @@
 import os
+import subprocess
 from flask import Flask, jsonify, request
 
 from server.container_monitor import ContainerMonitor
@@ -8,6 +9,23 @@ from server.hardware_monitor import HardwareMonitor
 # Create a Flask web server
 app = Flask(__name__)
 
+
+@app.route('/shutdown', methods=['POST'])
+def request_shutdown():
+    try:
+        subprocess.run(['shutdown', '-h', 'now'], check=True)
+        return jsonify({"message": "Computer is shutting down..."}), 200
+    except subprocess.CalledProcessError:
+        return jsonify({"error": "Failed to initiate shutdown."}), 500
+    
+@app.route('/restart', methods=['POST'])
+def request_restart():
+    try:
+        # Execute the Windows shutdown command
+        subprocess.run(['reboot'], check=True)
+        return jsonify({"message": "Computer is shutting down..."}), 200
+    except subprocess.CalledProcessError:
+        return jsonify({"error": "Failed to initiate shutdown."}), 500
 
 @app.route('/hardware-info', methods=['GET'])
 def get_info():

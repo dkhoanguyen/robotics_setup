@@ -78,8 +78,6 @@ class HardwareMonitor(object):
 
     @staticmethod
     def get_all_ip_addresses():
-        ipv4_addresses = []
-
         # Get the hostname of the local machine
         hostname = socket.gethostname()
 
