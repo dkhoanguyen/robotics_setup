@@ -6,6 +6,8 @@ docker run -d --name "robot_monitor_server" \
     --privileged \
     --network=host \
     --volume /var/run/docker.sock:/var/run/docker.sock \
+    --volume /run/dbus:/run/dbus \
+    --volume /run/systemd:/run/systemd --pid=host \
     --mount type=bind,source="$(pwd)"/calibration_file,target=/calibration_file \
     monitor_server:latest \
     bash -c "cd /usr/src/app/src/ && \

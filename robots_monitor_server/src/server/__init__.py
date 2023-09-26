@@ -20,17 +20,13 @@ def request_shutdown():
     manager.PowerOff()
     return jsonify({"message": "Computer is shutting down..."}), 200
 
-
-
 @app.route('/restart', methods=['POST'])
 def request_restart():
     bus = dbus.SystemBus()
     systemd1 = bus.get_object('org.freedesktop.systemd1', '/org/freedesktop/systemd1')
-
     # Get the Manager interface
     manager = dbus.Interface(systemd1, 'org.freedesktop.systemd1.Manager')
-
-    # Trigger a system shutdown
+    # Trigger a system restart
     manager.Reboot()
     return jsonify({"message": "Computer is shutting down..."}), 200
 
