@@ -1,4 +1,4 @@
-FROM arm64v8/ros:noetic-ros-base as configure_stage
+FROM arm64v8/ros:noetic-ros-base as robotics-base-arm64v8
 
 # Setup basic
 RUN apt update && apt install -y \
@@ -6,17 +6,22 @@ RUN apt update && apt install -y \
     gcc \
     curl \
     wget \
+    python3-catkin-tools \
+    python3-pip \
     ros-noetic-tf \
     ros-noetic-tf2-tools \
-    python3-catkin-tools \
-    python3-pip
-
-# Install ROS bridge
-RUN apt update && apt install -y ros-noetic-rosbridge-suite
+    ros-noetic-rosbridge-suite
 
 # Expose port for bridge
 EXPOSE 9090
 EXPOSE 11311
+
+# Custom ENTRYPOINT
+COPY scripts/ros_entrypoint.sh /ros_entrypoint.sh
+
+## UR CONTROLLER ##
+# Folder for storing kinematic calibration target
+RUN mkdir calibration_file
 
 # Configure ur_ws
 RUN mkdir -p ur_ws/src && \
@@ -32,20 +37,46 @@ RUN cd ur_ws && \
     rosdep update && \
     rosdep install --from-paths src --ignore-src -y
 
-# onrobot gripper
+# Build ur_ws
+RUN bin/bash -c "source /opt/ros/noetic/setup.bash && \
+                 cd ur_ws && \
+                 catkin build"
+
+## ONROBOT GRIPPER ##
+# Configure onrobot_ws
+RUN mkdir -p onrobot_ws/src && \
+    cd onrobot_ws && \
+    catkin init && \
+    echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
+
+# onrobot gripper dependencies
 RUN pip3 install pymodbus==2.5.3
-RUN cd ur_ws/src && \
+RUN cd onrobot_ws/src && \
     git clone https://github.com/takuya-ki/onrobot.git --depth 1 && \
     git clone https://github.com/roboticsgroup/roboticsgroup_upatras_gazebo_plugins.git --depth 1 && \
     cd ../ && \
     rosdep install --from-paths ./src --ignore-packages-from-source --rosdistro noetic -y --os=ubuntu:focal -y && \
     apt install -y ros-noetic-ros-control ros-noetic-ros-controllers
 
-# Build ur_ws
+# Build onrobot_ws
 RUN bin/bash -c "source /opt/ros/noetic/setup.bash && \
-                 cd ur_ws && \
+                 cd onrobot_ws && \
                  catkin build"
 
+## HANS CUTE CONTROLLER ##
+RUN mkdir -p hans_ws/src && \
+    cd hans_ws && \
+    catkin init && \
+    echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc && \
+    cd src && \ 
+    git clone https://github.com/dkhoanguyen/hans-cute-driver
+
+# Has to catkin_make here instead of build due to serial_port not being a catkin package
+RUN bin/bash -c "source /opt/ros/noetic/setup.bash && \
+                 cd hans_ws && \
+                 catkin_make"
+
+## DOBOT CONTROLLER ##
 # Configure Dobot ws
 RUN mkdir -p db_ws/src && \
     cd db_ws && \
@@ -73,43 +104,26 @@ RUN bin/bash -c "source /opt/ros/noetic/setup.bash && \
                  cd db_ws && \
                  catkin build"
 
-# Configure Dobot ws
-RUN mkdir -p hans_ws/src && \
-    cd hans_ws && \
-    catkin init && \
-    echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc && \
-    cd src && \ 
-    git clone https://github.com/dkhoanguyen/hans-cute-driver
-
-# Has to catkin_make here instead of build due to serial_port not being a catkin package
-RUN bin/bash -c "source /opt/ros/noetic/setup.bash && \
-                 cd hans_ws && \
-                 catkin_make"
+## TM CONTROLLER ## 
+RUN apt update && apt install -y qtbase5-dev \
+    qtdeclarative5-dev \
+    qtmultimedia5-dev \
+    qtquickcontrols2-5-dev && \
+    pip3 install flask waitress opencv-python numpy datetime
 
 # Omron Robots
-RUN mkdir -p omron_ws/src && \
-    cd omron_ws && \
+RUN mkdir -p tm_ws/src && \
+    cd tm_ws && \
     catkin init && \
     echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc && \
     cd src && \ 
     git clone -b noetic https://github.com/TechmanRobotInc/tmr_ros1.git && \
     cd ../ && \
-    rosdep install --from-paths ./src --ignore-packages-from-source --rosdistro noetic -y --os=ubuntu:focal -y 
+    apt update && \
+    rosdep install --from-paths ./src --ignore-packages-from-source --rosdistro noetic -y --os=ubuntu:focal -y
+    
+# Build tm_ws
+RUN bin/bash -c "source /opt/ros/noetic/setup.bash && \
+                 cd tm_ws && \
+                 catkin build"
 
-# # Build omron_ws
-# RUN bin/bash -c "source /opt/ros/noetic/setup.bash && \
-#                  cd omron_ws && \
-#                  catkin build"
-
-# # Add sensors support
-# RUN apt update && apt install -y \
-#     ros-noetic-realsense2-camera \
-#     ros-noetic-usb-cam
-
-
-COPY scripts/ros_entrypoint.sh /ros_entrypoint.sh
-
-RUN mkdir calibration_file
-
-FROM scratch
-COPY --from=configure_stage / /
