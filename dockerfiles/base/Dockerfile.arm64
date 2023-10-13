@@ -117,15 +117,16 @@ RUN mkdir -p tm_ws/src && \
     catkin init && \
     echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc && \
     cd src && \ 
-    git clone -b noetic https://github.com/dkhoanguyen/tmr_ros1.git && \
-    cd ../ && \
-    apt update && \
-    rosdep install --from-paths ./src --ignore-packages-from-source --rosdistro noetic -y --os=ubuntu:focal -y && \
     git clone https://github.com/takuya-ki/onrobot.git --depth 1 && \
     git clone https://github.com/roboticsgroup/roboticsgroup_upatras_gazebo_plugins.git --depth 1 && \
     cd ../ && \
     rosdep install --from-paths ./src --ignore-packages-from-source --rosdistro noetic -y --os=ubuntu:focal -y && \
-    apt install -y ros-noetic-ros-control ros-noetic-ros-controllers
+    apt install -y ros-noetic-ros-control ros-noetic-ros-controllers && \
+    git clone -b noetic https://github.com/dkhoanguyen/tmr_ros1.git && \
+    cd ../ && \
+    apt update && \
+    rosdep install --from-paths ./src --ignore-packages-from-source --rosdistro noetic -y --os=ubuntu:focal -y
+    
     
 # Build tm_ws
 RUN bin/bash -c "source /opt/ros/noetic/setup.bash && \
