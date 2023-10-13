@@ -71,28 +71,28 @@ docker run -d --name "ur3_controller" \
              roslaunch ur_robot_driver ur3_bringup.launch robot_ip:=${ROBOT_IP} \
              kinematics_config:='/calibration_file/ur3_calibration.yaml'"
 
-# Start gripper
-docker run -d --name "gripper_hw_interface" \
-    --tty \
-    --privileged \
-    --restart "always" \
-    --network "host" \
-    -e ROS_MASTER_URI="http://localhost:11311" \
-    -e ROS_IP="192.168.27.1" \
-    robotic_base:latest \
-    bash -c "source /opt/ros/noetic/setup.bash && source /ur_ws/devel/setup.bash && \
-             sleep 30 && \
-             roslaunch onrobot_rg_control bringup.launch gripper:=rg2 ip:=${GRIPPER_IP}"
+# # Start gripper
+# docker run -d --name "gripper_hw_interface" \
+#     --tty \
+#     --privileged \
+#     --restart "always" \
+#     --network "host" \
+#     -e ROS_MASTER_URI="http://localhost:11311" \
+#     -e ROS_IP="192.168.27.1" \
+#     robotic_base:latest \
+#     bash -c "source /opt/ros/noetic/setup.bash && source /ur_ws/devel/setup.bash && \
+#              sleep 30 && \
+#              roslaunch onrobot_rg_control bringup.launch gripper:=rg2 ip:=${GRIPPER_IP}"
 
-docker run -d --name "gripper_controller" \
-    --tty \
-    --privileged \
-    --restart "always" \
-    --network "host" \
-    -e ROS_MASTER_URI="http://localhost:11311" \
-    -e ROS_IP="192.168.27.1" \
-    robotic_base:latest \
-    bash -c "source /opt/ros/noetic/setup.bash && source /ur_ws/devel/setup.bash && \
-             sleep 45 && \
-             rosrun onrobot_rg_control OnRobotRGSimpleControllerServer.py"
+# docker run -d --name "gripper_controller" \
+#     --tty \
+#     --privileged \
+#     --restart "always" \
+#     --network "host" \
+#     -e ROS_MASTER_URI="http://localhost:11311" \
+#     -e ROS_IP="192.168.27.1" \
+#     robotic_base:latest \
+#     bash -c "source /opt/ros/noetic/setup.bash && source /ur_ws/devel/setup.bash && \
+#              sleep 45 && \
+#              rosrun onrobot_rg_control OnRobotRGSimpleControllerServer.py"
 
