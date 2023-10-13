@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ "$#" -lt 4 ]; then
+if [ "$#" -lt 2 ]; then
   echo "Usage: $0 <--robot_ip> <val>"
   exit 1
 fi
