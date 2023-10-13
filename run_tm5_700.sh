@@ -1,10 +1,5 @@
 #!/bin/bash
 
-if [ "$#" -lt 2 ]; then
-  echo "Usage: $0 <--robot_ip> <val>"
-  exit 1
-fi
-
 POSITIONAL_ARGS=()
 
 while [[ $# -gt 0 ]]; do
