@@ -2,6 +2,7 @@
 
 # Start the robot
 docker run -d --name "dobot_controller" \
+    --tty \
     --privileged \
     --restart "always" \
     --network "host" \
