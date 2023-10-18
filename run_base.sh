@@ -16,6 +16,7 @@ docker run -d --name "rpi3-wifiap" \
     --cap-add=NET_ADMIN \
     --network=host  \
     --volume "$(pwd)"/confs/hostapd_confs/robotics.conf:/etc/hostapd/hostapd.conf \
+    --label=com.centurylinklabs.watchtower.enable=false \
     rpi3-wifiap
 
 # Rosbridge server
