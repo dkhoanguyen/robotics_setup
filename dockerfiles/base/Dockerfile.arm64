@@ -133,5 +133,3 @@ RUN mkdir -p tm_ws/src && \
 RUN bin/bash -c "source /opt/ros/noetic/setup.bash && \
                  cd tm_ws && \
                  catkin build"
-
-RUN echo "tessadsadassadst"

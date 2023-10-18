@@ -42,4 +42,4 @@ docker run -d --name "watchtower" \
   -e WATCHTOWER_HTTP_API_UPDATE=true \
   -e WATCHTOWER_HTTP_API_TOKEN=robotics \
   -e WATCHTOWER_HTTP_API_PERIODIC_POLLS=true \
-  containrrr/watchtower:latest --interval 1
+  containrrr/watchtower:latest --interval 300
