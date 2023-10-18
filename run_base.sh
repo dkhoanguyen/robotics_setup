@@ -41,6 +41,6 @@ docker run -d --name "watchtower" \
   -e WATCHTOWER_INCLUDE_RESTARTING=true \
   -e WATCHTOWER_HTTP_API_TOKEN=robotics \
   -e WATCHTOWER_HTTP_API_PERIODIC_POLLS=true \
-  -p 8080:8080 \
+  -p 8181:8080 \
   --label=com.centurylinklabs.watchtower.enable=false \
-  containrrr/watchtower:latest --interval 300 --http-api-update
+  containrrr/watchtower:1.6.0 --interval 300 --http-api-update
