@@ -134,6 +134,4 @@ RUN bin/bash -c "source /opt/ros/noetic/setup.bash && \
                  cd tm_ws && \
                  catkin build"
 
-RUN echo "test"
-
-RUN echo "teest"
+RUN echo "tessadsadassadst"
