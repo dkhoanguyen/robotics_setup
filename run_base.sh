@@ -35,7 +35,6 @@ docker run -d --name "rosbridge" \
 docker run -d --name "watchtower" \
   --privileged \
   --restart "always" \
-  --network "host" \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -e WATCHTOWER_CLEANUP=true \
   -e WATCHTOWER_INCLUDE_RESTARTING=true \
