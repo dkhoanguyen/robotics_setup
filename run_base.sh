@@ -39,7 +39,6 @@ docker run -d --name "watchtower" \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -e WATCHTOWER_CLEANUP=true \
   -e WATCHTOWER_INCLUDE_RESTARTING=true \
-  -e WATCHTOWER_HTTP_API_UPDATE=true \
   -e WATCHTOWER_HTTP_API_TOKEN=robotics \
   -e WATCHTOWER_HTTP_API_PERIODIC_POLLS=true \
-  containrrr/watchtower:latest --interval 300
+  containrrr/watchtower:latest --interval 300 --http-api-update
