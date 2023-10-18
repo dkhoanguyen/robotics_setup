@@ -50,7 +50,7 @@ else
     --privileged \
     --network "host" \
     --volume "$(pwd)"/calibration_file:/calibration_file \
-    robotic_base:latest \
+    dkhoanguyen/robotic_base:latest \
     bash -c "source /opt/ros/noetic/setup.bash && source /ur_ws/devel/setup.bash && \
              timeout 20 roslaunch ur_calibration calibration_correction.launch \
              robot_ip:=${ROBOT_IP} target_filename:='/calibration_file/ur3_calibration.yaml'"
@@ -65,7 +65,7 @@ docker run -d --name "ur3_controller" \
     --mount type=bind,source="$(pwd)"/calibration_file,target=/calibration_file \
     -e ROS_MASTER_URI="http://localhost:11311" \
     -e ROS_IP="192.168.27.1" \
-    robotic_base:latest \
+    dkhoanguyen/robotic_base:latest \
     bash -c "source /opt/ros/noetic/setup.bash && source /ur_ws/devel/setup.bash && \
              sleep 15 && \
              roslaunch ur_robot_driver ur3_bringup.launch robot_ip:=${ROBOT_IP} \
@@ -79,7 +79,7 @@ docker run -d --name "ur3_controller" \
 #     --network "host" \
 #     -e ROS_MASTER_URI="http://localhost:11311" \
 #     -e ROS_IP="192.168.27.1" \
-#     robotic_base:latest \
+#     dkhoanguyen/robotic_base:latest \
 #     bash -c "source /opt/ros/noetic/setup.bash && source /ur_ws/devel/setup.bash && \
 #              sleep 30 && \
 #              roslaunch onrobot_rg_control bringup.launch gripper:=rg2 ip:=${GRIPPER_IP}"
@@ -91,7 +91,7 @@ docker run -d --name "ur3_controller" \
 #     --network "host" \
 #     -e ROS_MASTER_URI="http://localhost:11311" \
 #     -e ROS_IP="192.168.27.1" \
-#     robotic_base:latest \
+#     dkhoanguyen/robotic_base:latest \
 #     bash -c "source /opt/ros/noetic/setup.bash && source /ur_ws/devel/setup.bash && \
 #              sleep 45 && \
 #              rosrun onrobot_rg_control OnRobotRGSimpleControllerServer.py"

@@ -33,7 +33,7 @@ mkdir built_images
 
 Save the base image into a file in `built_images`
 ```
-docker save -o built_images/robotic_base robotic_base:latest
+docker save -o built_images/robotic_base dkhoanguyen/robotic_base:latest
 ```
 
 Wait for the process to finish then copy that image onto the pi using `scp`
