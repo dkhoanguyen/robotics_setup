@@ -31,7 +31,7 @@ docker run -d --name "tm5_700_controller" \
     --network "host" \
     -e ROS_MASTER_URI="http://localhost:11311" \
     -e ROS_IP="192.168.27.1" \
-    robotic_base:latest \
+    dkhoanguyen/robotic_base:latest \
     bash -c "source /opt/ros/noetic/setup.bash && source /tm_ws/devel/setup.bash && \
              sleep 15 && \
              rosrun tm_driver tm_driver ${ROBOT_IP}"

@@ -16,6 +16,7 @@ docker run -d --name "rpi3-wifiap" \
     --cap-add=NET_ADMIN \
     --network=host  \
     --volume "$(pwd)"/confs/hostapd_confs/robotics.conf:/etc/hostapd/hostapd.conf \
+    --label=com.centurylinklabs.watchtower.enable=false \
     rpi3-wifiap
 
 # Rosbridge server
@@ -26,16 +27,19 @@ docker run -d --name "rosbridge" \
     --network "host" \
     -e ROS_MASTER_URI="http://localhost:11311" \
     -e ROS_IP="192.168.27.1" \
-    robotic_base:latest \
+    dkhoanguyen/robotic_base:latest \
     bash -c "source /opt/ros/noetic/setup.bash && source /ur_ws/devel/setup.bash && \
              roslaunch rosbridge_server rosbridge_websocket.launch"
 
-# A utils dev container for testing purposes
-docker run -d --name "dev_container" \
-    --privileged \
-    --restart "always" \
-    --network "host" \
-    -e ROS_MASTER_URI="http://localhost:11311" \
-    -e ROS_IP="192.168.27.1" \
-    robotic_base:latest \
-    sleep infinity
+# Watchtower for monitoring updates
+docker run -d --name "watchtower" \
+  --privileged \
+  --restart "always" \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -e WATCHTOWER_CLEANUP=true \
+  -e WATCHTOWER_INCLUDE_RESTARTING=true \
+  -e WATCHTOWER_HTTP_API_TOKEN=robotics \
+  -e WATCHTOWER_HTTP_API_PERIODIC_POLLS=true \
+  -p 8181:8080 \
+  --label=com.centurylinklabs.watchtower.enable=false \
+  containrrr/watchtower:1.6.0 --interval 300 --http-api-update
