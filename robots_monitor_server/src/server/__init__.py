@@ -84,7 +84,7 @@ def start_controller():
             os.makedirs(directory_path)
         # Start calibration
         container_config = {}
-        container_config["image"] = "robotic_base:latest"
+        container_config["image"] = "dkhoanguyen/robotic_base:latest"
         container_config["name"] = "ur3e_calibration"
         container_config["tty"] = True
         container_config["privileged"] = True
@@ -104,7 +104,7 @@ def start_controller():
 
         # Start Robot Controller
         container_config = {}
-        container_config["image"] = "robotic_base:latest"
+        container_config["image"] = "dkhoanguyen/robotic_base:latest"
         container_config["name"] = "ur3e_controller"
         container_config["detach"] = True
         container_config["tty"] = True
