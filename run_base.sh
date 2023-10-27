@@ -33,6 +33,7 @@ docker run -d --name "rosbridge" \
 
 # Watchtower for monitoring updates
 docker run -d --name "watchtower" \
+  --tty \
   --privileged \
   --restart "always" \
   -v /var/run/docker.sock:/var/run/docker.sock \
@@ -40,6 +41,7 @@ docker run -d --name "watchtower" \
   -e WATCHTOWER_INCLUDE_RESTARTING=true \
   -e WATCHTOWER_HTTP_API_TOKEN=robotics \
   -e WATCHTOWER_HTTP_API_PERIODIC_POLLS=true \
-  -p 8181:8080 \
+  -e WATCHTOWER_INCLUDE_RESTARTING=true \
+  -p 8585:8585 \
   --label=com.centurylinklabs.watchtower.enable=false \
-  containrrr/watchtower:1.6.0 --interval 300 --http-api-update
+  dkhoanguyen/watchtower:latest --interval 10 --http-api-update --port 8585 --update-on-startup
