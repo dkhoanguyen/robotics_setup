@@ -1,23 +1,28 @@
 #!/bin/bash
 
-# Configure RPI Wifi access point
-# Prerequisites
-echo 'denyinterfaces wlan0' >> /etc/dhcpcd.conf
-cd rpi_wifi_ap/
+if grep -q 'BCM' /proc/cpuinfo && grep -q 'Raspberry Pi' /sys/firmware/devicetree/base/model; then
+    echo "This is a Raspberry Pi. Proceeding with the command."
+    # Configure RPI Wifi access point
+    # Prerequisites
+    echo 'denyinterfaces wlan0' >> /etc/dhcpcd.conf
+    cd rpi_wifi_ap/
 
-# Build docker image
-docker build . --tag rpi3-wifiap
+    # Build docker image
+    docker build . --tag rpi3-wifiap
 
-# Start the access point
-docker run -d --name "rpi3-wifiap" \
-    --restart "always" \
-    --tty \
-    --privileged \
-    --cap-add=NET_ADMIN \
-    --network=host  \
-    --volume "$(pwd)"/confs/hostapd_confs/robotics.conf:/etc/hostapd/hostapd.conf \
-    --label=com.centurylinklabs.watchtower.enable=false \
-    rpi3-wifiap
+    # Start the access point
+    docker run -d --name "rpi3-wifiap" \
+        --restart "always" \
+        --tty \
+        --privileged \
+        --cap-add=NET_ADMIN \
+        --network=host  \
+        --volume "$(pwd)"/confs/hostapd_confs/robotics.conf:/etc/hostapd/hostapd.conf \
+        --label=com.centurylinklabs.watchtower.enable=false \
+        rpi3-wifiap
+else
+    echo "This is not a Raspberry Pi. Aborting the command."
+fi
 
 # Rosbridge server
 docker run -d --name "rosbridge" \
@@ -41,7 +46,6 @@ docker run -d --name "watchtower" \
   -e WATCHTOWER_INCLUDE_RESTARTING=true \
   -e WATCHTOWER_HTTP_API_TOKEN=robotics \
   -e WATCHTOWER_HTTP_API_PERIODIC_POLLS=true \
-  -e WATCHTOWER_INCLUDE_RESTARTING=true \
-  -p 8585:8585 \
+  -p 8080:8080 \
   --label=com.centurylinklabs.watchtower.enable=false \
-  dkhoanguyen/watchtower:latest --interval 10 --http-api-update --port 8585 --update-on-startup
+  dkhoanguyen/watchtower:latest --interval 10 --http-api-update --port 8080 --update-on-startup
