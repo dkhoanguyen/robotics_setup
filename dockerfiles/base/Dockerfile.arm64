@@ -42,27 +42,6 @@ RUN bin/bash -c "source /opt/ros/noetic/setup.bash && \
                  cd ur_ws && \
                  catkin build"
 
-## ONROBOT GRIPPER ##
-# Configure onrobot_ws
-RUN mkdir -p onrobot_ws/src && \
-    cd onrobot_ws && \
-    catkin init && \
-    echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
-
-# onrobot gripper dependencies
-RUN pip3 install pymodbus==2.5.3
-RUN cd onrobot_ws/src && \
-    git clone https://github.com/takuya-ki/onrobot.git --depth 1 && \
-    git clone https://github.com/roboticsgroup/roboticsgroup_upatras_gazebo_plugins.git --depth 1 && \
-    cd ../ && \
-    rosdep install --from-paths ./src --ignore-packages-from-source --rosdistro noetic -y --os=ubuntu:focal -y && \
-    apt install -y ros-noetic-ros-control ros-noetic-ros-controllers
-
-# Build onrobot_ws
-RUN bin/bash -c "source /opt/ros/noetic/setup.bash && \
-                 cd onrobot_ws && \
-                 catkin build"
-
 ## HANS CUTE CONTROLLER ##
 RUN mkdir -p hans_ws/src && \
     cd hans_ws && \
@@ -133,5 +112,3 @@ RUN mkdir -p tm_ws/src && \
 RUN bin/bash -c "source /opt/ros/noetic/setup.bash && \
                  cd tm_ws && \
                  catkin build"
-
-RUN echo "ajsdosjdoasjdao"
