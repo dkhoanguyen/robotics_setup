@@ -49,4 +49,4 @@ docker run -d --name "robotics_supervisor" \
   -e WATCHTOWER_HTTP_API_PERIODIC_POLLS=true \
   -p 8080:8080 \
   --label=com.centurylinklabs.watchtower.enable=false \
-  dkhoanguyen/robotics_supervisor:latest --interval 300 --http-api-update --port 8080 --update-on-startup
+  dkhoanguyen/robotics_supervisor:latest --interval 300 --http-api-update --port 8080
