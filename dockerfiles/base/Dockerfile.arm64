@@ -8,9 +8,12 @@ RUN apt update && apt install -y \
     wget \
     python3-catkin-tools \
     python3-pip \
-    ros-noetic-tf \
-    ros-noetic-tf2-tools \
-    ros-noetic-rosbridge-suite
+    libudev-dev \
+    qtbase5-dev \
+    qtdeclarative5-dev \
+    qtmultimedia5-dev \
+    qtquickcontrols2-5-dev && \
+    pip3 install flask waitress opencv-python numpy datetime
 
 # Expose port for bridge
 EXPOSE 9090
@@ -39,8 +42,8 @@ RUN cd ur_ws && \
 
 # Build ur_ws
 RUN bin/bash -c "source /opt/ros/noetic/setup.bash && \
-                 cd ur_ws && \
-                 catkin build"
+    cd ur_ws && \
+    catkin build"
 
 ## HANS CUTE CONTROLLER ##
 RUN mkdir -p hans_ws/src && \
@@ -50,65 +53,41 @@ RUN mkdir -p hans_ws/src && \
     cd src && \ 
     git clone https://github.com/dkhoanguyen/hans-cute-driver
 
-# Has to catkin_make here instead of build due to serial_port not being a catkin package
 RUN bin/bash -c "source /opt/ros/noetic/setup.bash && \
-                 cd hans_ws && \
-                 catkin_make"
-
-## DOBOT CONTROLLER ##
-# Configure Dobot ws
-RUN mkdir -p db_ws/src && \
-    cd db_ws && \
-    catkin init && \
-    echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
-
-# dobot_magician_driver
-RUN apt install -y g++ git autogen autoconf build-essential cmake graphviz \
-                 libboost-dev libboost-test-dev libgtest-dev libtool \
-                 python3-sip-dev doxygen python3-sphinx pkg-config \
-                 python3-sphinx-rtd-theme
-
-RUN git clone https://github.com/crayzeewulf/libserial && \
-    cd libserial && \
-    ./compile.sh && \
-    cd build && \
-    make install && \
-    apt install -y libserialport0 libusb-1.0-0-dev
-
-RUN cd db_ws/src && \
-    git clone https://github.com/gapaul/dobot_magician_driver.git
-
-# Build db_ws
-RUN bin/bash -c "source /opt/ros/noetic/setup.bash && \
-                 cd db_ws && \
-                 catkin build"
+    cd hans_ws && \
+    catkin build"
 
 ## TM CONTROLLER ## 
-RUN apt update && apt install -y qtbase5-dev \
-    qtdeclarative5-dev \
-    qtmultimedia5-dev \
-    qtquickcontrols2-5-dev && \
-    pip3 install flask waitress opencv-python numpy datetime
-
 # Omron Robots
 RUN mkdir -p tm_ws/src && \
     cd tm_ws && \
     catkin init && \
     echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc && \
     cd src && \ 
-    git clone https://github.com/takuya-ki/onrobot.git --depth 1 && \
-    git clone https://github.com/roboticsgroup/roboticsgroup_upatras_gazebo_plugins.git --depth 1 && \
-    cd ../ && \
-    rosdep install --from-paths ./src --ignore-packages-from-source --rosdistro noetic -y --os=ubuntu:focal -y && \
-    apt install -y ros-noetic-ros-control ros-noetic-ros-controllers && \
-    cd src && \
-    git clone -b noetic https://github.com/dkhoanguyen/tmr_ros1.git && \
+    git clone -b noetic https://github.com/TechmanRobotInc/tmr_ros1.git && \
     cd ../ && \
     apt update && \
     rosdep install --from-paths ./src --ignore-packages-from-source --rosdistro noetic -y --os=ubuntu:focal -y
-    
-    
+
 # Build tm_ws
 RUN bin/bash -c "source /opt/ros/noetic/setup.bash && \
-                 cd tm_ws && \
-                 catkin build"
+    cd tm_ws && \
+    catkin build"
+
+## ONROBOT CONTROLLER ## 
+RUN mkdir -p onrobot_ws/src && \
+    cd onrobot_ws && \
+    catkin init && \
+    echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc && \
+    cd src && \ 
+    git clone https://github.com/takuya-ki/onrobot.git --depth 1 && \
+    git clone https://github.com/roboticsgroup/roboticsgroup_upatras_gazebo_plugins.git --depth 1 && \
+    git clone https://github.com/tonydle/ur_onrobot.git && \
+    cd ../ && \
+    rosdep install --from-paths ./src --ignore-packages-from-source --rosdistro noetic -y --os=ubuntu:focal -y && \
+    apt install -y ros-noetic-ros-control ros-noetic-ros-controllers
+
+# Build onrobot_ws
+RUN bin/bash -c "source /opt/ros/noetic/setup.bash && \
+    cd onrobot_ws && \
+    catkin build"
