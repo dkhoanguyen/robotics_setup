@@ -33,8 +33,8 @@ docker run -d --name "rosbridge" \
     -e ROS_MASTER_URI="http://localhost:11311" \
     -e ROS_IP="192.168.27.1" \
     dkhoanguyen/robotic_base:latest \
-    bash -c "source /opt/ros/noetic/setup.bash && source /ur_ws/devel/setup.bash && \
-             roslaunch rosbridge_server rosbridge_websocket.launch"
+    bash -c "source /opt/ros/noetic/setup.bash && \
+             roscore"
 
 # Supervisor
 docker run -d --name "robotics_supervisor" \
