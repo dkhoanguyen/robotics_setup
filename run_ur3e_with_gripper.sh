@@ -26,6 +26,31 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
+echo "Robot IP = ${ROBOT_IP}"
+echo "Gripper IP = ${GRIPPER_IP}"
+
+
+file_path="calibration_file/ur3_calibration.yaml"
+# TODO: check whether this folder exists
+if [ -e "$file_path" ]; then
+    echo "File exists in the folder."
+else
+    echo "Performing calibration"
+    mkdir calibration_file
+
+    # Calibrate the robot
+    docker run --rm --name "ur3_calibration" \
+    --tty \
+    --privileged \
+    --network "host" \
+    --volume "$(pwd)"/calibration_file:/calibration_file \
+    dkhoanguyen/robotic_base:latest \
+    bash -c "source /opt/ros/noetic/setup.bash && source /ur_ws/devel/setup.bash && \
+             timeout 20 roslaunch ur_calibration calibration_correction.launch \
+             robot_ip:=${ROBOT_IP} target_filename:='/calibration_file/ur3_calibration.yaml'"
+fi
+
 docker run -d --name "ur3e_rg2_controller" \
     --tty \
     --privileged \
